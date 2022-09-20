@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>AQ Records</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/picnic" />
+    </head>
+
+    <body>
+        <nav>
+            <a href="/" class="brand"><span>Records</span></a>
+
+            <div class="menu">
+                <a href="/cities" class="button success">Back</a>
+                <a href="/" class="button button">Home</a>
+            </div>
+        </nav>
+
+        <article class="flex two" style="padding: 3em 1em;">
+
+            <div>
+                <h2>{{ country }}, {{ city }}</h2>
+                {% block content %}
+                {% for record in records %}
+                <p>{{ record }}</p>
+                {% endfor %}
+                {% endblock %}
+            </div>
+
+        </article>
+    </body>
+
+</html>

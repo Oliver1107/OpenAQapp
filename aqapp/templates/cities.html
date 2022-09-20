@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>AQ Cities</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/picnic" />
+    </head>
+
+    <body>
+        <nav>
+            <a href="/" class="brand"><span>Cities</span></a>
+
+            <div class="menu">
+                <a href="/" class="button success">Home</a>
+                <a href="/refresh" class="button button">Refresh Data</a>
+            </div>
+        </nav>
+
+        <article style="padding: 3em 1em;">
+
+            <div>
+            {% block content %}
+            {% for country in countries %}
+                <h3>{{ country }}</h3>
+                {% for city in Location.query.filter(Location.country == country).all() %}
+                    <a href="/{{ country }}-{{ city.city }}" class="pseudo button">{{ city.city }}</a>
+                {% endfor %}
+            {% endfor %}
+            {% endblock %}
+            </div>
+        </article>
+    </body>
+</html>

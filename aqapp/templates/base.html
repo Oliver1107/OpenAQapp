@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>AQ Home</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/picnic" />
+    </head>
+
+    <body>
+        <nav>
+            <a href="/" class="brand"><span>Home - {{ country }}, {{ city }}</span></a>
+
+            <div class="menu">
+                <a href="/refresh" class="button success">Refresh Data</a>
+                <a href="/cities" class="button button">Cities</a>
+            </div>
+        </nav>
+
+        <article class="flex two" style="padding: 3em 1em;">
+
+            <div>
+                <h2>Select City</h2>
+
+                <form action="/" method="post">
+                    <select name="place">
+                      {% for place in Location.query.all() %}
+                      <option value="{{ place.country }}/{{ place.city }}">{{ place.country }}, {{ place.city }}</option>
+                      {% endfor %}
+                    </select>
+                    
+                    <input type="text" name="value" placeholder="Enter Threshold">
+                    <input type="submit" value="Select">
+                </form>
+
+                <h4>Average aq value for {{ city }}: {{ average }}</h4>
+                <h4>Standard deviation of values for {{ city }}: {{ std }}</h4>
+                <h4>Average aq value for {{ country }}: {{ country_avg }}</h4>
+                <h4>Standard deviation of average city values for {{ country }}: {{ country_std }}</h4>
+
+            </div>
+
+            <div>
+                <h4>{{ country }}, {{ city }}</h4>
+                <h5>Threshold: {{ value }}</h5>
+                {% block content %}
+                {% for rec in data %}
+                    <p>{{ rec }}</p>
+                {% endfor %}
+                {% endblock %}
+            </div>
+        </article>
+    </body>
+</html>
