@@ -1,1 +1,1 @@
-web: gunicorn aqapp/aq_dashboard.py:APP -t 120
+web: gunicorn aqapp:APP -t 120
