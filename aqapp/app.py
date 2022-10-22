@@ -1,6 +1,6 @@
 """OpenAQ Air Quality Dashboard with Flask."""
 from flask import Flask, render_template, request
-from openaq import OpenAQ
+from aqapp.openaq import OpenAQ
 from flask_sqlalchemy import SQLAlchemy
 import random
 from numpy import sqrt
