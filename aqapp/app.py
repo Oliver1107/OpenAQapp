@@ -125,8 +125,8 @@ def create_app():
         """Pull fresh data from Open AQ and replace existing data."""
         DB.drop_all()
         DB.create_all()
-        _, cities = api.cities(limit=100)
-        res = random.sample(cities['results'], k=98)
+        _, cities = api.cities(limit=60)
+        res = random.sample(cities['results'], k=50)
         for i in range(len(res)):
             if res[i]['city'] != 'Los Angeles':
                 location = Location(
