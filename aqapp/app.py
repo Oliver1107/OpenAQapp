@@ -46,51 +46,6 @@ def create_app():
         def __repr__(self):
             return f"(Date: {self.datetime}, Value: {self.value})"
 
-    def refresh(root=True):
-        """Pull fresh data from Open AQ and replace existing data."""
-        DB.drop_all()
-        DB.create_all()
-        _, cities = api.cities(limit=3000)
-        res = random.sample(cities['results'], k=98)
-        for i in range(len(res)):
-            if res[i]['city'] != 'Los Angeles':
-                location = Location(
-                    country=res[i]['country'],
-                    city=res[i]['city']
-                )
-                DB.session.add(location)
-                records = get_results(
-                    city=res[i]['city'], country=res[i]['country']
-                )
-                for rec in records:
-                    record = Record(
-                        datetime=str(rec[0]),
-                        value=rec[1],
-                        location_id=(i+1),
-                        location=location
-                    )
-                    DB.session.add(record)
-        _, la = api.cities(city='Los Angeles')
-        res = la['results']
-        for i in range(len(res)):
-            location = Location(
-                country=res[i]['country'],
-                city=res[i]['city']
-            )
-            DB.session.add(location)
-            records = get_results(country=res[i]['country'])
-            for rec in records:
-                record = Record(
-                    datetime=str(rec[0]),
-                    value=rec[1],
-                    location_id=(i+99),
-                    location=location
-                )
-                DB.session.add(record)
-        DB.session.commit()
-        if root:
-            return render_template('refresh.html')
-
     @app.route('/', methods=['POST', 'GET'])
     def root(country='CL', city='Los Angeles', value=18):
         """Base view."""
@@ -114,10 +69,7 @@ def create_app():
                 (Location.city == city) & (Location.country == country)
             ).all()
         except:
-            refresh(root=False)
-            place = Location.query.filter(
-                (Location.city == city) & (Location.country == country)
-            ).all()
+            return render_template('load.html')
         place = place[0]
         data = []
         for rec in place.records:
@@ -169,8 +121,49 @@ def create_app():
         )
 
     @app.route('/refresh')
-    def refresh_route():
-        return refresh()
+    def refresh():
+        """Pull fresh data from Open AQ and replace existing data."""
+        DB.drop_all()
+        DB.create_all()
+        _, cities = api.cities(limit=3000)
+        res = random.sample(cities['results'], k=98)
+        for i in range(len(res)):
+            if res[i]['city'] != 'Los Angeles':
+                location = Location(
+                    country=res[i]['country'],
+                    city=res[i]['city']
+                )
+                DB.session.add(location)
+                records = get_results(
+                    city=res[i]['city'], country=res[i]['country']
+                )
+                for rec in records:
+                    record = Record(
+                        datetime=str(rec[0]),
+                        value=rec[1],
+                        location_id=(i+1),
+                        location=location
+                    )
+                    DB.session.add(record)
+        _, la = api.cities(city='Los Angeles')
+        res = la['results']
+        for i in range(len(res)):
+            location = Location(
+                country=res[i]['country'],
+                city=res[i]['city']
+            )
+            DB.session.add(location)
+            records = get_results(country=res[i]['country'])
+            for rec in records:
+                record = Record(
+                    datetime=str(rec[0]),
+                    value=rec[1],
+                    location_id=(i+99),
+                    location=location
+                )
+                DB.session.add(record)
+        DB.session.commit()
+        return render_template('refresh.html')
 
     @app.route('/cities')
     def cities():
