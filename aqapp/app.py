@@ -98,7 +98,7 @@ def create_app():
                 city_avg = sum(
                     [rec.value for rec in city.records]) / len(city.records)
                 country_avgs.append(city_avg)
-        if len(country_avgs) > 0:
+        if len(country_avgs) > 1:
             country_avg = sum(country_avgs) / len(country_avgs)
             res = []
             for x in country_avgs:
@@ -106,8 +106,8 @@ def create_app():
             sums = sum(res)
             country_std = sqrt(sums / (len(country_avgs) - 1))
         else:
-            country_avg = '*No data*'
-            country_std = '*No data*'
+            country_avg = '*Not enough data for this country*'
+            country_std = '*Not enough data for this country*'
 
         # predict_next =
         # threshold_equal_good =
@@ -125,8 +125,8 @@ def create_app():
         """Pull fresh data from Open AQ and replace existing data."""
         DB.drop_all()
         DB.create_all()
-        _, cities = api.cities(limit=20)
-        res = random.sample(cities['results'], k=5)
+        _, cities = api.cities(limit=100)
+        res = random.sample(cities['results'], k=98)
         for i in range(len(res)):
             if res[i]['city'] != 'Los Angeles':
                 location = Location(
